@@ -78,7 +78,7 @@ class Agent(object):
         for (log_prob, value), R in zip(saved_actions, returns):
             advantage = R - value.item()
             policy_losses.append(-log_prob * advantage)
-            value_losses.append(F.smooth_l1_loss(value, T.tensor([R])))
+            value_losses.append(F.smooth_l1_loss(value, T.tensor([R]).to(self.actor_critic.device)))
             
         self.actor_critic.optimizer.zero_grad()
         loss = T.stack(policy_losses).sum() + T.stack(value_losses).sum()
